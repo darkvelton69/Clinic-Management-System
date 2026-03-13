@@ -3,11 +3,13 @@ services:
     image: postgres:15-alpine
     container_name: polyclinic-db
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: Agl_159_zvM
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: polyclinic_db
+    env_file:
+      - .env
     ports:
-      - "5432:5432"
+      - "5433:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d polyclinic_db"]
       interval: 5s
@@ -23,11 +25,13 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    env_file:
+      - .env
     environment:
       SPRING_PROFILES_ACTIVE: docker
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/polyclinic_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: Agl_159_zvM
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
     volumes:
       - ./app-logs:/app/logs
 volumes:

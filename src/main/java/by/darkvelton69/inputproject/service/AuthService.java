@@ -35,10 +35,6 @@ public class AuthService {
         try {
             User user = new User();
 
-            if(user.getEmail().equals(request.email())){
-                throw new UserAlreadyExistsException("Пользователь с таким email уже существует");
-            }
-
 
 
 
