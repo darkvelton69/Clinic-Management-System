@@ -24,7 +24,7 @@ public class PassportController {
         return passportService.addPassport(passportRequest);
     }
 
-    @PatchMapping("edit-passport")
+    @PatchMapping("/edit-passport")
     public ResponseEntity<PassportResponse> editPassport(@RequestBody PassportRequest passportRequest){
         return ResponseEntity.ok(passportService.editPassport(passportRequest));
     }
