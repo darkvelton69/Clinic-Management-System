@@ -7,18 +7,21 @@ import by.darkvelton69.inputproject.entity.Doctor;
 import by.darkvelton69.inputproject.entity.Role;
 import by.darkvelton69.inputproject.entity.User;
 import by.darkvelton69.inputproject.exception.NotFoundException;
+import by.darkvelton69.inputproject.exception.RoleException;
 import by.darkvelton69.inputproject.exception.UserAlreadyExistsException;
 import by.darkvelton69.inputproject.mapper.DocUserDepMapper;
+import by.darkvelton69.inputproject.mapper.DoctorMapper;
 import by.darkvelton69.inputproject.repository.DepartmentRepository;
 import by.darkvelton69.inputproject.repository.DoctorRepository;
 import by.darkvelton69.inputproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -29,10 +32,19 @@ public class DoctorService {
     private final DoctorRepository doctorRepository;
     private final UserRepository userRepository;
     private final DepartmentRepository departmentRepository;
+    private final DoctorMapper doctorMapper;
 
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public DoctorResponse registerDoc(DoctorRegistration registration) {
+    public DoctorResponse registerDoctor(DoctorRegistration registration) {
+
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        User currentUser = userRepository.findByEmail(email).orElseThrow(()-> new NotFoundException("Пользователь не найден"));
+
+        if(currentUser.getRole()!=Role.ADMIN){
+            throw new RoleException("Данная функция доступна только админу");
+        }
 
         if(userRepository.existsByEmail(registration.email())){
             throw new UserAlreadyExistsException("Пользователь с таким email уже есть");
@@ -40,6 +52,8 @@ public class DoctorService {
 
         Department department = departmentRepository.findById(registration.departmentId())
                 .orElseThrow(() -> new NotFoundException("Департамент не найден"));
+
+
 
         User user = User.builder()
                 .age(registration.age())
@@ -71,7 +85,15 @@ public class DoctorService {
 
     }
 
-    public DoctorResponse getDoc(Long id) {
+    public List<DoctorResponse> getDoctorByJobTitle(String jobTitle){
+
+        List<Doctor> DoctorList = doctorRepository.findAllByJobTitle(jobTitle);
+
+        return doctorMapper.toResponseList(DoctorList);
+    }
+
+
+    public DoctorResponse getDoctor(Long id) {
         return doctorRepository.findById(id)
                 .map(docUserDepMapper::toResponse)
                 .orElseThrow(() -> new NotFoundException("Врач не найден"));

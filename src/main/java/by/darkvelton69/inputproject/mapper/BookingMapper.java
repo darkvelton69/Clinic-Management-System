@@ -13,12 +13,12 @@ public interface BookingMapper {
 
     @Mapping(target = "client", ignore = true)
     @Mapping(target = "doctor", ignore = true)
-    Booking toEntity(BookingRequest request);
+    Booking toEntity(BookingRequest bookingRequest);
 
     @Mapping(target = "clientId", source = "client.id")
     @Mapping(target = "doctor", source = "doctor")
     BookingResponse toResponse(Booking booking);
 
-    List<BookingResponse> toResponseList(List<Booking> booking);
+    List<BookingResponse> toResponseList(List<Booking> bookingList);
 
 }

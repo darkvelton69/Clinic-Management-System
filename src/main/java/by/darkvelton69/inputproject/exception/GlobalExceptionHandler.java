@@ -15,53 +15,64 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handle(UserAlreadyExistsException uaee){
+    public ErrorResponse handle(UserAlreadyExistsException userAlreadyExistsException){
         return new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
                 "ERROR IS USER ALREADY EXISTS",
-                uaee.getMessage(),
+                userAlreadyExistsException.getMessage(),
+                LocalDateTime.now()
+        );
+    }
+
+    @ExceptionHandler(RoleException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handle(RoleException roleException){
+        return new ErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                "ERROR IS ROLE",
+                roleException.getMessage(),
                 LocalDateTime.now()
         );
     }
 
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handle(NotFoundException nfe){
+    public ErrorResponse handle(NotFoundException notFoundException){
         return new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
                 "NOT FOUND ERROR",
-                nfe.getMessage(),
+                notFoundException.getMessage(),
                 LocalDateTime.now()
         );
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handle (AccessDeniedException ae){
+    public ErrorResponse handle (AccessDeniedException accessDeniedException){
         return new ErrorResponse(HttpStatus.NOT_FOUND.value(),
         "ERROR ACCESS",
-        ae.getMessage(),
+        accessDeniedException.getMessage(),
         LocalDateTime.now()
         );
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handle (IllegalArgumentException iae){
+    public ErrorResponse handle (IllegalArgumentException illegalArgumentException){
         return new ErrorResponse(HttpStatus.NOT_FOUND.value(),
                 "ERROR ILLEGAL",
-                iae.getMessage(),
+                illegalArgumentException.getMessage(),
                 LocalDateTime.now()
         );
     }
 
     @ExceptionHandler(BookingClosedException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handle(BookingClosedException ex){
+    public ErrorResponse handle(BookingClosedException bookingClosedException){
         return new ErrorResponse(
                 HttpStatus.CONFLICT.value(),
                 "BOOKING ERROR",
-                ex.getMessage(),
+                bookingClosedException.getMessage(),
                 LocalDateTime.now()
         );
     }

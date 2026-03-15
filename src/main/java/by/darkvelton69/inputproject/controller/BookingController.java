@@ -20,8 +20,8 @@ public class BookingController {
 
     @PostMapping("/record")
     @ResponseStatus(HttpStatus.CREATED)
-    public BookingResponse record(@Valid @RequestBody BookingRequest request){
-        return bookingService.record(request);
+    public BookingResponse record(@Valid @RequestBody BookingRequest bookingRequest){
+        return bookingService.record(bookingRequest);
     }
 
     @GetMapping("/{id}/doctor")
@@ -36,7 +36,7 @@ public class BookingController {
 
     @PatchMapping("/{id}/close")
     public ResponseEntity<Void> closeBooking(@PathVariable Long id){
-        bookingService.closeBooking(id);
+        bookingService.closeMyBooking(id);
 
         return ResponseEntity.noContent().build();
     }

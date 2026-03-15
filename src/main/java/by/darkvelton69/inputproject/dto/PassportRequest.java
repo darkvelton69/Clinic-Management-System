@@ -10,7 +10,6 @@ public record PassportRequest (
         String issuedBy,
 
         @JsonFormat(pattern = "yyyy-MM-dd")
-        LocalDate issuedDate,
-        Long clientId
+        LocalDate issuedDate
 ){
 }

@@ -8,7 +8,6 @@ public record DoctorRegistration(
         String lastName,
         Long age,
         String email,
-        Role role,
         String password,
         String jobTitle,
         String cabinet,

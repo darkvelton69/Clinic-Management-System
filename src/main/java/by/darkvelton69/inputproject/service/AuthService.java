@@ -82,18 +82,18 @@ public class AuthService {
     }
 
     @Transactional
-    public AuthResponse editPassword(ChangePasswordRequest cpr){
+    public AuthResponse editPassword(ChangePasswordRequest changePasswordRequest){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
         User user = userRepository.findByEmail(email).orElseThrow(()->
                 new NotFoundException("Пользователь не найден")
                 );
 
-        if(!passwordEncoder.matches(cpr.currentPassword(), user.getPassword())){
+        if(!passwordEncoder.matches(changePasswordRequest.currentPassword(), user.getPassword())){
             throw new IllegalArgumentException("Неверный текущий пароль");
         }
 
-        user.setPassword(passwordEncoder.encode(cpr.newPassword()));
+        user.setPassword(passwordEncoder.encode(changePasswordRequest.newPassword()));
 
 
         userRepository.save(user);

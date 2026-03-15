@@ -9,9 +9,9 @@ import org.mapstruct.*;
 public interface MedicalMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    MedicalRecord updateEntityFromDto(MedicalRecordRequest mrr, @MappingTarget MedicalRecord entity);
+    MedicalRecord updateEntityFromDto(MedicalRecordRequest medicalRecordRequest, @MappingTarget MedicalRecord medicalRecord);
 
-    MedicalRecord toEntity(MedicalRecordRequest mrr);
+    MedicalRecord toEntity(MedicalRecordRequest medicalRecordRequest);
 
     @Mapping(target = "clientId", source = "client.id")
     MedicalRecordResponse toResponse(MedicalRecord mr);

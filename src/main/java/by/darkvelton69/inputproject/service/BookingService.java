@@ -2,16 +2,15 @@ package by.darkvelton69.inputproject.service;
 
 import by.darkvelton69.inputproject.dto.BookingRequest;
 import by.darkvelton69.inputproject.dto.BookingResponse;
-import by.darkvelton69.inputproject.entity.Booking;
-import by.darkvelton69.inputproject.entity.Client;
-import by.darkvelton69.inputproject.entity.Condition;
-import by.darkvelton69.inputproject.entity.Doctor;
+import by.darkvelton69.inputproject.entity.*;
 import by.darkvelton69.inputproject.exception.BookingClosedException;
 import by.darkvelton69.inputproject.exception.NotFoundException;
+import by.darkvelton69.inputproject.exception.RoleException;
 import by.darkvelton69.inputproject.mapper.BookingMapper;
 import by.darkvelton69.inputproject.repository.BookingRepository;
 import by.darkvelton69.inputproject.repository.ClientRepository;
 import by.darkvelton69.inputproject.repository.DoctorRepository;
+import by.darkvelton69.inputproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,16 +27,17 @@ public class BookingService {
     private final ClientRepository clientRepository;
     private final BookingMapper bookingMapper;
     private final DoctorRepository doctorRepository;
+    private final UserRepository userRepository;
 
 
     @Transactional
-    public BookingResponse record(BookingRequest request) {
+    public BookingResponse record(BookingRequest bookingRequest) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
         Client client = clientRepository.findByUser_Email(email).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
-        Doctor doctor = doctorRepository.findById(request.doctorId()).orElseThrow(() -> new NotFoundException("Врач не найден"));
+        Doctor doctor = doctorRepository.findById(bookingRequest.doctorId()).orElseThrow(() -> new NotFoundException("Врач не найден"));
 
-        Booking booking = bookingMapper.toEntity(request);
+        Booking booking = bookingMapper.toEntity(bookingRequest);
 
         booking.setClient(client);
         booking.setDoctor(doctor);
@@ -77,12 +77,17 @@ public class BookingService {
     }
 
     @Transactional
-    public void closeBooking(Long id) {
+    public void closeMyBooking(Long id) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        User currentUser = userRepository.findByEmail(email).orElseThrow(()-> new NotFoundException("Пользователь не найден"));
+
+        if(currentUser.getRole()!= Role.ADMIN){
+            throw new RoleException("Данная функция доступна только админу");
+        }
 
 
-        Booking booking = bookingRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Бронь не найдена"));
-
+        Booking booking = bookingRepository.findByIdAndClient_User_Email(id, email);
 
 
         if (booking.getCondition() == Condition.CLOSE) {

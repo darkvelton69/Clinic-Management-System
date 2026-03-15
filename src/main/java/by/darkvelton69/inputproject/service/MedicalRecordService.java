@@ -19,39 +19,38 @@ import org.springframework.transaction.annotation.Transactional;
 public class MedicalRecordService {
 
     private final UserRepository userRepository;
-    private final MedicalMapper mapper;
+    private final MedicalMapper medicalMapper;
     private final MedicalRecordRepository medicalRecordRepository;
 
 
     @Transactional
-    public MedicalRecordResponse addMedicalRecord(MedicalRecordRequest mrr) {
+    public MedicalRecordResponse addMedicalRecord(MedicalRecordRequest medicalRecordRequest) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
         User user = userRepository.findByEmail(email).orElseThrow(
                 () -> new NotFoundException("Пользователь не найден")
         );
 
-        MedicalRecord medicalRecord = mapper.toEntity(mrr);
+        MedicalRecord medicalRecord = medicalMapper.toEntity(medicalRecordRequest);
 
         medicalRecord.setClient(user.getClient());
 
         MedicalRecord mrSaved = medicalRecordRepository.save(medicalRecord);
 
-        return mapper.toResponse(mrSaved);
+        return medicalMapper.toResponse(mrSaved);
     }
 
     @Transactional
-    public MedicalRecordResponse editMedicalRecord(MedicalRecordRequest mrr) {
+    public MedicalRecordResponse editMedicalRecord(MedicalRecordRequest medicalRecordRequest) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
         MedicalRecord medicalRecord = medicalRecordRepository.findByClientUserEmail(email).orElseThrow(() -> new NotFoundException("Медицинская карта не найдена"));
 
 
-        mapper.updateEntityFromDto(mrr,medicalRecord);
+        medicalMapper.updateEntityFromDto(medicalRecordRequest, medicalRecord);
 
-        System.out.println("Изменения полей выполнены");
-        MedicalRecord mrSaved = medicalRecordRepository.save(medicalRecord);
+        MedicalRecord savedMedicalRecord = medicalRecordRepository.save(medicalRecord);
 
-        return mapper.toResponse(mrSaved);
+        return medicalMapper.toResponse(savedMedicalRecord);
     }
 }

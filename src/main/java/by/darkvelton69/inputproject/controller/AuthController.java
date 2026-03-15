@@ -16,17 +16,17 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public AuthResponse register(@RequestBody RegistrationRequest request){
-        return authService.register(request);
+    public AuthResponse register(@RequestBody RegistrationRequest registrationRequest){
+        return authService.register(registrationRequest);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request){
-        return ResponseEntity.ok(authService.login(request));
+    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest){
+        return ResponseEntity.ok(authService.login(authRequest));
     }
 
     @PatchMapping("/editPassword")
-    public ResponseEntity<AuthResponse> editPassword(@RequestBody ChangePasswordRequest cpr){
-        return ResponseEntity.ok(authService.editPassword(cpr));
+    public ResponseEntity<AuthResponse> editPassword(@RequestBody ChangePasswordRequest changePasswordRequest){
+        return ResponseEntity.ok(authService.editPassword(changePasswordRequest));
     }
 }

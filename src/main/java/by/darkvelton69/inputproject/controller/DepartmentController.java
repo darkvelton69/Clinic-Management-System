@@ -18,7 +18,7 @@ public class DepartmentController {
 
     @PostMapping("/created")
     @ResponseStatus(HttpStatus.CREATED)
-    public DepartmentResponse createdDep(@RequestBody DepartmentRequest request){
-        return departmentService.createdDepartment(request);
+    public DepartmentResponse createdDepartment(@RequestBody DepartmentRequest departmentRequest){
+        return departmentService.createdDepartment(departmentRequest);
     }
 }

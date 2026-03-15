@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class PassportService {
     private final PassportRepository passportRepository;
-    private final PassportMapper mapper;
+    private final PassportMapper passportMapper;
     private final UserRepository userRepository;
 
     @Transactional
@@ -32,13 +32,28 @@ public class PassportService {
             throw new RuntimeException("Пользователь не может иметь больше одного паспорта. Если вы всё таки имеете больше одного пасспорта советую пойти в полицию");
         }
 
-        Passport passport = mapper.toEntity(request);
+        Passport passport = passportMapper.toEntity(request);
 
         passport.setUser(user);
 
         Passport savedPassport = passportRepository.save(passport);
 
-        return mapper.toResponse(savedPassport);
+        return passportMapper.toResponse(savedPassport);
+
+    }
+
+    @Transactional
+    public PassportResponse editPassport(PassportRequest passportRequest){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Passport passport = passportRepository.findByUserEmail(email);
+
+        passportMapper.updateEntityFromDto(passportRequest, passport);
+
+        Passport savedPassport = passportRepository.save(passport);
+
+        return passportMapper.toResponse(savedPassport);
+
 
     }
 }

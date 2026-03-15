@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -18,13 +19,18 @@ public class DoctorController {
 
     @PostMapping("/created")
     @ResponseStatus(HttpStatus.CREATED)
-    public DoctorResponse createdDoc(@RequestBody DoctorRegistration doctorRegistration){
-        return doctorService.registerDoc(doctorRegistration);
+    public DoctorResponse createdDoctor(@RequestBody DoctorRegistration doctorRegistration){
+        return doctorService.registerDoctor(doctorRegistration);
     }
 
     @GetMapping("/{id}")
-    public DoctorResponse getDoc(@PathVariable Long id){
-        return doctorService.getDoc(id);
+    public DoctorResponse getDoctor(@PathVariable Long id){
+        return doctorService.getDoctor(id);
+    }
+
+    @GetMapping("/list/{jobTitle}")
+    public List<DoctorResponse> getDoctorList(@PathVariable String jobTitle){
+        return doctorService.getDoctorByJobTitle(jobTitle);
     }
 
 
