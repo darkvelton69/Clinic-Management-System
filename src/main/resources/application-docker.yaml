@@ -9,3 +9,15 @@ spring:
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.xml
     enabled: true
+telegram:
+  bot:
+    name: ${TELEGRAM_NAME}
+    token: ${TELEGRAM_TOKEN}
+services:
+  app:
+    build: .
+    environment:
+      - TZ=Europe/Moscow
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro

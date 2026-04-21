@@ -30,6 +30,9 @@ public class Doctor {
     @Column(name = "cabinet", nullable = false)
     private String cabinet;
 
+    @Version
+    private Integer version;
+
     @OneToMany(mappedBy = "doctor")
     private List<Booking> bookingList = new ArrayList<>();
 

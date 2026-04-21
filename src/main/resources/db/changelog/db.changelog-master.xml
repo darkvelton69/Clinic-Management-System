@@ -6,4 +6,7 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
 
     <include file="db/changelog/changeset/01-create-users-and-doctors-and-passports-and-medical_records-and-departments-and-bookings.xml"/>
+    <include file="db/changelog/changeset/02-add-telegram-id.xml"/>
+    <include file="db/changelog/changeset/03-add-appointment_time-appointment_date.xml"/>
+    <include file="db/changelog/changeset/04-add-version-in-doctor.xml"/>
 </databaseChangeLog>

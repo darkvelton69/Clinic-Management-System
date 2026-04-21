@@ -30,6 +30,9 @@ public class Client {
     @OneToOne(mappedBy = "client", cascade = CascadeType.ALL)
     private MedicalRecord medicalRecord;
 
+    @Column(name = "telegram_chat_id", unique = true)
+    private Long telegramChatId;
+
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", unique = true, nullable = false)

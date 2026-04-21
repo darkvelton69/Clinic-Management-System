@@ -19,4 +19,7 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
 
     @EntityGraph(attributePaths = {"user", "department"})
     List<Doctor> findAllByJobTitle(String jobTitle);
+
+
+    List<Doctor> findByJobTitle(String jobTitle);
 }

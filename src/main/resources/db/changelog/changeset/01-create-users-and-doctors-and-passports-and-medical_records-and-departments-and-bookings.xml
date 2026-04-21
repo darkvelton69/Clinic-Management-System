@@ -164,9 +164,6 @@
             <column name="condition" type="VARCHAR(30)">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_at" type="TIMESTAMP">
-                <constraints nullable="false"/>
-            </column>
             <column name="client_id" type="BIGINT">
                 <constraints nullable="false"
                              foreignKeyName="fk_booking_client"

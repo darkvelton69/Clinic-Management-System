@@ -11,12 +11,15 @@ import by.darkvelton69.inputproject.repository.BookingRepository;
 import by.darkvelton69.inputproject.repository.ClientRepository;
 import by.darkvelton69.inputproject.repository.DoctorRepository;
 import by.darkvelton69.inputproject.repository.UserRepository;
+import by.darkvelton69.inputproject.tgBot.bot.AppointmentDraft;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -28,6 +31,7 @@ public class BookingService {
     private final BookingMapper bookingMapper;
     private final DoctorRepository doctorRepository;
     private final UserRepository userRepository;
+    private final ClientService clientService;
 
 
     @Transactional
@@ -41,8 +45,11 @@ public class BookingService {
 
         booking.setClient(client);
         booking.setDoctor(doctor);
+        booking.setAppointmentDate(bookingRequest.appointmentDate());
+        booking.setAppointmentTime(bookingRequest.appointmentTime());
+        booking.setCondition(Condition.ACTIVE);
 
-        Booking savedBooking = bookingRepository.save(booking);
+        Booking savedBooking = bookingRepository.saveAndFlush(booking);
 
         return bookingMapper.toResponse(savedBooking);
     }
@@ -59,12 +66,35 @@ public class BookingService {
         return bookingMapper.toResponseList(booking);
     }
 
-    public List<BookingResponse> getMySchedule(Long id){
+    public List<LocalTime> getAvailableTimes(Long doctorId, LocalDate date) {
+        List<LocalTime> allWorkingHours = List.of(
+                LocalTime.of(9, 0), LocalTime.of(10, 0), LocalTime.of(11, 0),
+                LocalTime.of(12, 0), LocalTime.of(14, 0), LocalTime.of(15, 0), LocalTime.of(16, 0),
+                LocalTime.of(17, 50), LocalTime.of(18, 5), LocalTime.of(18,15),
+                LocalTime.of(18,20),LocalTime.of(18,25),LocalTime.of(19,15)
+        );
+
+        List<Booking> activeBooking = bookingRepository.findByDoctorIdAndAppointmentDateAndCondition(
+                doctorId,
+                date,
+                Condition.ACTIVE
+        );
+
+        List<LocalTime> bookedTimes = activeBooking.stream()
+                .map(Booking::getAppointmentTime)
+                .toList();
+
+        return allWorkingHours.stream()
+                .filter(time -> !bookedTimes.contains(time))
+                .toList();
+    }
+
+    public List<BookingResponse> getMySchedule(Long id) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
         Doctor doctor = doctorRepository.findByUser_Email(email);
 
-        if(!id.equals(doctor.getId())){
+        if (!id.equals(doctor.getId())) {
             throw new AccessDeniedException("Вы не имеете прав смотреть записи другого врача");
         }
 
@@ -80,9 +110,9 @@ public class BookingService {
     public void closeMyBooking(Long id) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        User currentUser = userRepository.findByEmail(email).orElseThrow(()-> new NotFoundException("Пользователь не найден"));
+        User currentUser = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
 
-        if(currentUser.getRole()!= Role.ADMIN){
+        if (currentUser.getRole() != Role.ADMIN) {
             throw new RoleException("Данная функция доступна только админу");
         }
 
@@ -95,5 +125,31 @@ public class BookingService {
         }
 
         booking.setCondition(Condition.CLOSE);
+    }
+
+    @Transactional
+    public void createAppointmentFromDraft(long telegramChatId, AppointmentDraft draft) {
+        Client client = clientService.findByTelegramChatId(telegramChatId)
+                .orElseThrow(() -> new RuntimeException("Пациент не найден"));
+
+        Doctor doctor = doctorRepository.findById(draft.getDoctorId())
+                .orElseThrow(() -> new RuntimeException("Врач не найден"));
+
+        Booking booking = new Booking();
+        booking.setClient(client);
+        booking.setDoctor(doctor);
+        booking.setAppointmentDate(draft.getDate());
+        booking.setAppointmentTime(draft.getTime());
+        booking.setCondition(Condition.ACTIVE);
+
+        bookingRepository.save(booking);
+    }
+
+    @Transactional
+    public void cancelAppointment(Long appointmentId) {
+        Booking bkg = bookingRepository.findById(appointmentId)
+                .orElseThrow(() -> new NotFoundException("Запись не найдена"));
+
+        bkg.setCondition(Condition.CLOSE);
     }
 }

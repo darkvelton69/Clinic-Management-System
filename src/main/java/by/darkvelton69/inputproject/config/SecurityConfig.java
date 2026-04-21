@@ -30,7 +30,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth->auth
                         .requestMatchers("/polyclinic34/auth/**","/polyclinic34/profile/**", "/swagger-ui/**","/v3/api-docs/**", "/polyclinic34/doctor/{id}", "/polyclinic34/booking/{id}/allBook", "/polyclinic34/booking/**", "/polyclinic34/medicalrecord/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/polyclinic34/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/polyclinic34/**").permitAll()
                         .anyRequest().authenticated()
                 ).sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
