@@ -40,19 +40,18 @@ public class DoctorService {
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        User currentUser = userRepository.findByEmail(email).orElseThrow(()-> new NotFoundException("Пользователь не найден"));
+        User currentUser = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
 
-        if(currentUser.getRole()!=Role.ADMIN){
+        if (currentUser.getRole() != Role.ADMIN) {
             throw new RoleException("Данная функция доступна только админу");
         }
 
-        if(userRepository.existsByEmail(registration.email())){
+        if (userRepository.existsByEmail(registration.email())) {
             throw new UserAlreadyExistsException("Пользователь с таким email уже есть");
         }
 
         Department department = departmentRepository.findById(registration.departmentId())
                 .orElseThrow(() -> new NotFoundException("Департамент не найден"));
-
 
 
         User user = User.builder()
@@ -68,10 +67,10 @@ public class DoctorService {
         user = userRepository.save(user);
 
 
-
         Doctor doctor = Doctor.builder()
                 .cabinet(registration.cabinet())
                 .jobTitle(registration.jobTitle())
+                .appointmentDuration(registration.appointmentDuration())
                 .department(department)
                 .user(user)
                 .build();
@@ -85,7 +84,7 @@ public class DoctorService {
 
     }
 
-    public List<DoctorResponse> getDoctorByJobTitle(String jobTitle){
+    public List<DoctorResponse> getDoctorByJobTitle(String jobTitle) {
 
         List<Doctor> DoctorList = doctorRepository.findAllByJobTitle(jobTitle);
 

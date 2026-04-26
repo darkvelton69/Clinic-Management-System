@@ -7,6 +7,7 @@ public record DoctorResponse(
         String jobTitle,
         String cabinet,
         DepartmentResponse department,
+        Integer appointmentDuration,
         UserResponse user
 ) {
 }

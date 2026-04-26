@@ -24,7 +24,7 @@ public class Department {
     private String name;
 
     @OneToMany(mappedBy = "department")
-    private List<Doctor> doctorList = new ArrayList<>();
+    private List<Doctor> doctors = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {

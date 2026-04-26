@@ -1,8 +1,6 @@
 package by.darkvelton69.inputproject.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -43,6 +41,12 @@ public class Doctor {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id")
     private Department department;
+
+    @Column(name = "appointment_duration", nullable = false)
+    private Integer appointmentDuration;
+
+    @OneToMany(mappedBy = "doctor",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<WorkShift> workShifts = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {

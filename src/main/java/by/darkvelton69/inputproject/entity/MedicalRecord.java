@@ -9,7 +9,8 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "medical_records")
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -41,12 +42,9 @@ public class MedicalRecord extends BaseEntity {
     private String insuranceNumber;
 
 
-
-
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", nullable = false, unique = true)
     private Client client;
-
 
 
     @Override

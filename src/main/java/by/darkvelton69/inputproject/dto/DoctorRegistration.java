@@ -1,6 +1,5 @@
 package by.darkvelton69.inputproject.dto;
 
-import by.darkvelton69.inputproject.entity.Role;
 
 public record DoctorRegistration(
         String firstName,
@@ -11,6 +10,7 @@ public record DoctorRegistration(
         String password,
         String jobTitle,
         String cabinet,
-        Long departmentId
+        Long departmentId,
+        Integer appointmentDuration
 ) {
 }

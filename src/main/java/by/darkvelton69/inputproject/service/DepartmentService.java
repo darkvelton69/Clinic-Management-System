@@ -29,13 +29,13 @@ public class DepartmentService {
 
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public DepartmentResponse createdDepartment(DepartmentRequest request){
+    public DepartmentResponse createdDepartment(DepartmentRequest request) {
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        User currentUser = userRepository.findByEmail(email).orElseThrow(()-> new NotFoundException("Пользователь не найден"));
+        User currentUser = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
 
-        if(currentUser.getRole()!= Role.ADMIN){
+        if (currentUser.getRole() != Role.ADMIN) {
             throw new RoleException("Данная функция доступна только админу");
         }
 

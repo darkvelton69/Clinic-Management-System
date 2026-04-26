@@ -8,7 +8,6 @@ import by.darkvelton69.inputproject.entity.Client;
 import by.darkvelton69.inputproject.entity.Role;
 import by.darkvelton69.inputproject.entity.User;
 import by.darkvelton69.inputproject.exception.NotFoundException;
-import by.darkvelton69.inputproject.exception.UserAlreadyExistsException;
 import by.darkvelton69.inputproject.repository.ClientRepository;
 import by.darkvelton69.inputproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,9 +34,6 @@ public class AuthService {
         try {
             User user = new User();
 
-
-
-
             user.setAge(request.age());
             user.setEmail(request.email());
             user.setPassword(passwordEncoder.encode(request.password()));
@@ -57,8 +53,8 @@ public class AuthService {
 
             String token = jwtService.generateToken(user);
             return new AuthResponse(token);
-        }catch (Exception e){
-            throw new RuntimeException("Ошибка в сохранении пользователя",e);
+        } catch (Exception e) {
+            throw new RuntimeException("Ошибка в сохранении пользователя", e);
         }
 
 
@@ -82,14 +78,14 @@ public class AuthService {
     }
 
     @Transactional
-    public AuthResponse editPassword(ChangePasswordRequest changePasswordRequest){
+    public AuthResponse editPassword(ChangePasswordRequest changePasswordRequest) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        User user = userRepository.findByEmail(email).orElseThrow(()->
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
                 new NotFoundException("Пользователь не найден")
-                );
+        );
 
-        if(!passwordEncoder.matches(changePasswordRequest.currentPassword(), user.getPassword())){
+        if (!passwordEncoder.matches(changePasswordRequest.currentPassword(), user.getPassword())) {
             throw new IllegalArgumentException("Неверный текущий пароль");
         }
 

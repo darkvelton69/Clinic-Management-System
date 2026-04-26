@@ -40,12 +40,14 @@ public class AppointmentDetailCallbackHandler implements TelegramCallbackHandler
                 "*Детали записи №%d*\n\n" +
                         "Врач: %s\n" +
                         "Специализация: %s\n" +
+                        "Продолжительность приёма: %d минут\n" +
                         "Дата: %s\n" +
                         "Время: %s\n" +
                         "Статус: %s",
                 bkg.getId(),
                 bkg.getDoctor().getUser().getFirstName() + " " + bkg.getDoctor().getUser().getMiddleName() + " " + bkg.getDoctor().getUser().getLastName(),
                 bkg.getDoctor().getJobTitle(),
+                bkg.getDoctor().getAppointmentDuration(),
                 bkg.getAppointmentDate(),
                 bkg.getAppointmentTime(),
                 bkg.getCondition()
@@ -60,12 +62,12 @@ public class AppointmentDetailCallbackHandler implements TelegramCallbackHandler
         return message;
     }
 
-    private InlineKeyboardMarkup getDetailKeyboard(Long bkgId){
+    private InlineKeyboardMarkup getDetailKeyboard(Long bkgId) {
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
 
         InlineKeyboardButton cancelBtn = new InlineKeyboardButton();
         cancelBtn.setText("Отменить эту запись");
-        cancelBtn.setCallbackData("CANCELBKG_"+bkgId);
+        cancelBtn.setCallbackData("CANCELBKG_" + bkgId);
 
         InlineKeyboardButton backBtn = new InlineKeyboardButton();
         backBtn.setText("Назад к списку");

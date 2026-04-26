@@ -12,7 +12,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="first_name" type="VARCHAR(30)">
-                <constraints unique="true" nullable="false"/>
+                <constraints nullable="false"/>
             </column>
             <column name="last_name" type="VARCHAR(30)">
                 <constraints nullable="false"/>
@@ -52,6 +52,9 @@
                 <constraints nullable="false"/>
             </column>
             <column name="job_title" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="appointment_duration" type="Integer">
                 <constraints nullable="false"/>
             </column>
             <column name="department_id" type="BIGINT">

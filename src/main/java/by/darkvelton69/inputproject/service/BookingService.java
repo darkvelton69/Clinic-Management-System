@@ -7,11 +7,9 @@ import by.darkvelton69.inputproject.exception.BookingClosedException;
 import by.darkvelton69.inputproject.exception.NotFoundException;
 import by.darkvelton69.inputproject.exception.RoleException;
 import by.darkvelton69.inputproject.mapper.BookingMapper;
-import by.darkvelton69.inputproject.repository.BookingRepository;
-import by.darkvelton69.inputproject.repository.ClientRepository;
-import by.darkvelton69.inputproject.repository.DoctorRepository;
-import by.darkvelton69.inputproject.repository.UserRepository;
+import by.darkvelton69.inputproject.repository.*;
 import by.darkvelton69.inputproject.tgBot.bot.AppointmentDraft;
+import io.jsonwebtoken.lang.Collections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,7 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -67,25 +67,22 @@ public class BookingService {
     }
 
     public List<LocalTime> getAvailableTimes(Long doctorId, LocalDate date) {
-        List<LocalTime> allWorkingHours = List.of(
-                LocalTime.of(9, 0), LocalTime.of(10, 0), LocalTime.of(11, 0),
-                LocalTime.of(12, 0), LocalTime.of(14, 0), LocalTime.of(15, 0), LocalTime.of(16, 0),
-                LocalTime.of(17, 50), LocalTime.of(18, 5), LocalTime.of(18,15),
-                LocalTime.of(18,20),LocalTime.of(18,25),LocalTime.of(19,15)
-        );
 
-        List<Booking> activeBooking = bookingRepository.findByDoctorIdAndAppointmentDateAndCondition(
-                doctorId,
-                date,
-                Condition.ACTIVE
-        );
+        Doctor doctor = doctorRepository.findById(doctorId)
+                .orElseThrow(()-> new NotFoundException("Врач не найден"));
 
-        List<LocalTime> bookedTimes = activeBooking.stream()
-                .map(Booking::getAppointmentTime)
-                .toList();
+        Integer durationMinutes = doctor.getAppointmentDuration();
 
-        return allWorkingHours.stream()
-                .filter(time -> !bookedTimes.contains(time))
+        if(durationMinutes == null || durationMinutes <= 0){
+            durationMinutes = 30;
+        }
+
+        String intervalStr = durationMinutes + "minutes";
+
+        List<java.sql.Time> sqlTimes = bookingRepository.findAvailableSlotsByDb(doctorId, date, intervalStr);
+
+        return sqlTimes.stream()
+                .map(java.sql.Time::toLocalTime)
                 .toList();
     }
 
