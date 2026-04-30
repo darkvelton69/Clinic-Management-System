@@ -10,4 +10,6 @@
     <include file="db/changelog/changeset/03-add-appointment_time-appointment_date.xml"/>
     <include file="db/changelog/changeset/04-add-version-in-doctor.xml"/>
     <include file="db/changelog/changeset/05-create-work_shifts.xml"/>
+    <include file="db/changelog/changeset/06-create-verification-tokens.xml"/>
+    <include file="db/changelog/changeset/07-add-column-users.xml"/>
 </databaseChangeLog>

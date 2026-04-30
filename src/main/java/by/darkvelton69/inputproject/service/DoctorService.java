@@ -15,13 +15,15 @@ import by.darkvelton69.inputproject.repository.DepartmentRepository;
 import by.darkvelton69.inputproject.repository.DoctorRepository;
 import by.darkvelton69.inputproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -84,11 +86,17 @@ public class DoctorService {
 
     }
 
-    public List<DoctorResponse> getDoctorByJobTitle(String jobTitle) {
+    public Page<DoctorResponse> getAllDoctorByJobTitle(String jobTitle,int page, int size) {
 
-        List<Doctor> DoctorList = doctorRepository.findAllByJobTitle(jobTitle);
+        Pageable pageable = PageRequest.of(
+                Math.max(0, page-1),
+                size,
+                Sort.by("user.lastName").ascending()
+        );
 
-        return doctorMapper.toResponseList(DoctorList);
+        Page<Doctor> DoctorPage = doctorRepository.findAllByJobTitle(jobTitle, pageable);
+
+        return DoctorPage.map(doctorMapper::toResponse);
     }
 
 

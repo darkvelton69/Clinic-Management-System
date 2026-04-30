@@ -6,11 +6,13 @@ import by.darkvelton69.inputproject.entity.*;
 import by.darkvelton69.inputproject.exception.BookingClosedException;
 import by.darkvelton69.inputproject.exception.NotFoundException;
 import by.darkvelton69.inputproject.exception.RoleException;
+import by.darkvelton69.inputproject.listener.BookingCreatedEvent;
 import by.darkvelton69.inputproject.mapper.BookingMapper;
 import by.darkvelton69.inputproject.repository.*;
 import by.darkvelton69.inputproject.tgBot.bot.AppointmentDraft;
 import io.jsonwebtoken.lang.Collections;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,8 @@ public class BookingService {
     private final DoctorRepository doctorRepository;
     private final UserRepository userRepository;
     private final ClientService clientService;
+    private final EmailService emailService;
+    private final ApplicationEventPublisher eventPublisher;
 
 
     @Transactional
@@ -50,6 +54,8 @@ public class BookingService {
         booking.setCondition(Condition.ACTIVE);
 
         Booking savedBooking = bookingRepository.saveAndFlush(booking);
+
+        eventPublisher.publishEvent(new BookingCreatedEvent(savedBooking));
 
         return bookingMapper.toResponse(savedBooking);
     }

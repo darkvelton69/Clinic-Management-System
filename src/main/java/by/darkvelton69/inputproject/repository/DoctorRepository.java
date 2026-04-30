@@ -2,6 +2,8 @@ package by.darkvelton69.inputproject.repository;
 
 import by.darkvelton69.inputproject.dto.DoctorResponse;
 import by.darkvelton69.inputproject.entity.Doctor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -17,8 +19,11 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
 
     Doctor findByUser_Email(String userEmail);
 
-    @EntityGraph(attributePaths = {"user", "department"})
-    List<Doctor> findAllByJobTitle(String jobTitle);
+//
+//    @EntityGraph(attributePaths = {"user", "department"})
+//    List<Doctor> findAllByJobTitle(String jobTitle);
+
+    Page<Doctor> findAllByJobTitle(String jobTitle,Pageable page);
 
 
     List<Doctor> findByJobTitle(String jobTitle);
