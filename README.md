@@ -8,6 +8,7 @@ REST API приложение для управления процессами �
 * **Java** (Core)
 * **Spring Boot** (Web, Data JPA, Security)
 * **Maven** (Сборка проекта и управление зависимостями)
+* **Telegram Bot API** (Spring Boot Starter) - для работы с мессенджарами
 
 **База данных и Миграции:**
 * **PostgreSQL** (Основная реляционная БД)
