@@ -60,16 +60,26 @@ docker-compose up -d db
 При старте приложения Liquibase автоматически накатывает все необходимые миграции. Файлы миграций (changelogs) находятся в директории:
 src/main/resources/db/changelog/
 
+  Телеграмм-Бот (TelegramAPI)
+  Docker запуск - При старте приложения код автоматически импортируется в вашего ранее созданного бота. НЕ ЗАБУДЬТЕ ВНЕСТИ СВОИ ДАННЫЕ В .env.example, А ПОСЛЕ ЭТОГО ПЕРЕИМЕНОВАТЬ ЕГО В .env ИНАЧЕ СТОЛКНЕТЕСЬ С ОШИБКОЙ
 
-### Не забудь добавить `.env.example`!
-Так как мы надежно спрятали твой настоящий `.env`, создай в корне проекта файл `.`**`env.example`** и положи туда пустые шаблоны (закоммить его в Git), чтобы другие понимали, что нужно вводить:
+Лично я советую запуск через docker-compose up --build
+
+В .env.example вы должны поменять все данные под себя как показано в следующем примере ------>>>
 
 ```text
-# Пример настроек базы данных
+  Пример настроек базы данных
 DB_URL=jdbc:postgresql://localhost:5433/polyclinic_db
-DB_USERNAME=postgres
+DB_USERNAME=your_username_here
 DB_PASSWORD=your_password_here
+JWT_SECRET=generate_your_random_string_here
+TELEGRAM_NAME=your_telegram_name
+TELEGRAM_TOKEN=your_telegram_token
+MAIL_USERNAME=your_username_or_email
+MAIL_PASSWORD=your_password_email
 
-# Пример секретного ключа для JWT (если используешь)
+  Пример секретного ключа для JWT (если используешь)
 JWT_SECRET=your_secret_key_here
 
+
+В СЛУЧАЕ ОШИБОК НАПИШИТЕ
